@@ -79,21 +79,25 @@ int ownCmdHandler(char** parsed)
 }
 
 // function for parsing command words
-void parseSpace(char* str, char** parsed)
+void parseSpace(char* str, char** parsed, int* len)
 {
     int i;
-  
+    
     for (i = 0; i < 100; i++) {
         parsed[i] = strsep(&str, " ");
-  		
-        if (parsed[i] == NULL)
+  		(*len)++;
+        if (parsed[i] == NULL){
+            (*len)--;
             break;
-        if (strlen(parsed[i]) == 0)
+        }
+        if (strlen(parsed[i]) == 0){
+            (*len)--;
             i--;
+        }    
     }
 
 }
-int processString(char* str, char** parsed)
+int processString(char* str, char** parsed, int* len)
 {
 
     //char* strpiped[2];
@@ -110,7 +114,7 @@ int processString(char* str, char** parsed)
   
         parseSpace(str, parsed);
     }*/
-  	parseSpace(str, parsed);
+  	parseSpace(str, parsed,len);
     if (ownCmdHandler(parsed))
         return 0;
     else
@@ -146,7 +150,7 @@ int redirect() {
 }
 
 // Function where the system command is executed
-void execArgs(char** parsed)
+void execArgs(char** parsed,int* len)
 {
     // Forking a child
     pid_t pid = fork(); 
@@ -160,12 +164,22 @@ void execArgs(char** parsed)
         return;
     } 
 	else if (pid == 0) 
-	{       
-
-        redirect();
+	{
+        
+        
+        if((*len)-2>0 && strcmp(parsed[(*len)-2],">")==0 ){
+            int file = open(strcat(parsed[(*len)-1],".txt") , O_WRONLY | O_CREAT, 0777);
+            if(file == -1){
+                return 2;
+            }
+            int file2 = dup2(file,STDOUT_FILENO);
+            close(file);
+        }
+        
 
 		if(strcmp(parsed[0], "path") == 0)
 		{
+            printf("girdi pathe");
 			int isPath = path(parsed[1]);
 			if (isPath == 0) 
 			{
@@ -195,32 +209,40 @@ void execArgs(char** parsed)
 			}
 			if(parsed[1] != NULL)
 			{
-
-				args[0] = "/bin/ls"; 
-	    		args[1] = NULL;
-		        if(execvp(parsed[0], parsed) < 0)
-	    		{
-	    			perror("\nCould not execute command..");
-				} 
-                else
-                {
-        	        execv(args[0], args);  
-		        }
+                printf("%s\n",parsed[(*len)-2]);
+                
+                
+                //char *test[]={ parsed , NULL};
+                if((*len)-2>0 && strcmp(parsed[(*len)-2],">")==0 ){
+                    
+                    parsed[(*len)-1]=NULL;
+                    parsed[(*len)-2]=NULL;
+                    
+                    if(execvp(parsed[0], parsed) < 0)
+                    {
+                        perror("\nCould not execute command..");
+                    } 
+                }else{
+                    
+                    if(execvp(parsed[0], parsed) < 0)
+	    		    {
+	    		    	perror("\nCould not execute command..");
+				    } 
+                }
+                
                 
 				exit(0);
 			}
 			else
 			{
 				args[0] = "/bin/ls"; 
-	    		args[1] = NULL;  
+	    		args[1] = NULL;
+                //printf("%s    %s\n",parsed[0], parsed[1]);
 		        if(execvp(parsed[0], parsed) < 0)
 	    		{
-	    			perror("\nCould not execute command..");
+	    			perror("\nCould not execute command..[parsed[1] nullsa]");
 				} 
-                else
-                {
-        	        execv(args[0], args);
-		        }
+              
 				exit(0);
 			}			
 		}
@@ -239,10 +261,11 @@ void execArgs(char** parsed)
 void executeCmds(char input[], char *parsedArgs[])
 {
     int isExe = 0;
-    isExe = processString(input,parsedArgs);
+    int len=0;
+    isExe = processString(input,parsedArgs,&len);
     if(isExe == 1)
     {
-        execArgs(parsedArgs);
+        execArgs(parsedArgs,&len);
     }
 }
 

@@ -1,0 +1,15 @@
+>
+total 184
+drwxrwxrwx 1 neruos neruos   4096 Apr 28 16:54 .
+drwxrwxrwx 1 neruos neruos   4096 Apr 28 14:39 ..
+drwxrwxrwx 1 neruos neruos   4096 Apr 28 16:23 .git
+-rwxrwxrwx 1 neruos neruos  17008 Apr 28 14:43 TEDShell
+-rwxrwxrwx 1 neruos neruos    144 Apr 28 14:43 TEDShell-tester.sh
+-rwxrwxrwx 1 neruos neruos   6643 Apr 28 16:54 TEDShell.c
+-rwxrwxrwx 1 neruos neruos 133254 Apr 28 14:43 TEDShell.exe
+-rwxrwxrwx 1 neruos neruos  17968 Apr 28 16:54 a.out
+-rwxrwxrwx 1 neruos neruos    895 Apr 28 16:53 deneme.txt
+-rwxrwxrwx 1 neruos neruos      2 Apr 28 16:54 test.txt
+drwxrwxrwx 1 neruos neruos   4096 Apr 28 14:43 tester
+drwxrwxrwx 1 neruos neruos   4096 Apr 28 14:44 tests
+drwxrwxrwx 1 neruos neruos   4096 Apr 28 14:43 tests-out
