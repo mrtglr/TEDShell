@@ -135,6 +135,16 @@ int path(char* str)
 	return 0;
 }
 
+int redirect() {
+    int file = open("cout.txt", O_WRONLY | O_CREAT, 0777);
+    if(file == -1){
+        return 2;
+    }
+    int file2 = dup2(file,STDOUT_FILENO);
+    close(file);
+    return 0;
+}
+
 // Function where the system command is executed
 void execArgs(char** parsed)
 {
@@ -150,14 +160,9 @@ void execArgs(char** parsed)
         return;
     } 
 	else if (pid == 0) 
-	{
+	{       
 
-        int file = open("cout.txt", O_WRONLY | O_CREAT, 0777);
-        if(file == -1){
-            return 2;
-        }
-        int file2 = dup2(file,STDOUT_FILENO);
-        close(file);
+        redirect();
 
 		if(strcmp(parsed[0], "path") == 0)
 		{
@@ -190,22 +195,7 @@ void execArgs(char** parsed)
 			}
 			if(parsed[1] != NULL)
 			{
-                /*
-                printf("0:%s\n",parsed[0]);
-                printf("1:%s\n",parsed[1]);
-                printf("2:%s\n",parsed[2]);
-                */
 
-                /*
-                int file = open("cout.txt", O_WRONLY | O_CREAT, 0777);
-                if(file == -1){
-                    return 2;
-                }
-                int file2 = dup2(file,STDOUT_FILENO);
-                close(file);
-                */
-
-                
 				args[0] = "/bin/ls"; 
 	    		args[1] = NULL;
 		        if(execvp(parsed[0], parsed) < 0)
@@ -214,18 +204,13 @@ void execArgs(char** parsed)
 				} 
                 else
                 {
-        	        execv(args[0], args);
+        	        execv(args[0], args);  
 		        }
                 
 				exit(0);
 			}
 			else
 			{
-
-                printf("a0:%s\n",parsed[0]);
-                printf("1:%s\n",parsed[1]);
-                printf("2:%s\n",parsed[2]);
-
 				args[0] = "/bin/ls"; 
 	    		args[1] = NULL;  
 		        if(execvp(parsed[0], parsed) < 0)
@@ -234,7 +219,6 @@ void execArgs(char** parsed)
 				} 
                 else
                 {
-                    
         	        execv(args[0], args);
 		        }
 				exit(0);
