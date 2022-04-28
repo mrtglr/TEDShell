@@ -47,13 +47,16 @@ int ownCmdHandler(char** parsed)
 
     switch (here) {
     case 1:
-        printf("\nGoodbye\n");
-        printf("case 1 %d\n", here);
-        exit(0);
+        if(parsed[1] != NULL){
+            printf("exit cannot take arguments\n");
+            return 1;
+        } else {exit(0);}
     case 2:
     	if(parsed[1] == NULL)
     	{
-    		printf("error\n");
+            //printf("%s\n", getcwd(s, 100));
+    		chdir("/");
+            //printf("%s\n", getcwd(s, 100));
 		}
 		else
 		{
@@ -165,18 +168,12 @@ void execArgs(char** parsed,int* len)
     } 
 	else if (pid == 0) 
 	{
-        
-        
         if((*len)-2>0 && strcmp(parsed[(*len)-2],">")==0 ){
             int file = open(strcat(parsed[(*len)-1],".txt") , O_WRONLY | O_CREAT, 0777);
-            if(file == -1){
-                return 2;
-            }
             int file2 = dup2(file,STDOUT_FILENO);
             close(file);
         }
-        
-
+    
 		if(strcmp(parsed[0], "path") == 0)
 		{
             printf("girdi pathe");
