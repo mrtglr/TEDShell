@@ -39,7 +39,7 @@ int ownCmdHandler(char** parsed)
 	char s[100];
   
     for (i = 0; i < numberOfCmd; i++) {
-        if (strcmp(parsed[0], Commands[i]) == 0) {
+        if (parsed[0]!=NULL &&strcmp(parsed[0], Commands[i]) == 0) {
             here = i + 1;
             break;
         }
@@ -54,9 +54,9 @@ int ownCmdHandler(char** parsed)
     case 2:
     	if(parsed[1] == NULL)
     	{
-            //printf("%s\n", getcwd(s, 100));
+            
     		chdir("/");
-            //printf("%s\n", getcwd(s, 100));
+            
 		}
 		else
 		{
@@ -89,15 +89,17 @@ void parseSpace(char* str, char** parsed, int* len)
     for (i = 0; i < 100; i++) {
         parsed[i] = strsep(&str, " ");
   		(*len)++;
-        if (parsed[i] == NULL){
+        if (parsed[i] == NULL ){
             (*len)--;
             break;
         }
-        if (strlen(parsed[i]) == 0){
+        if (strlen(parsed[i]) == 0|| parsed[i]==" "){
+            
             (*len)--;
             i--;
         }    
     }
+    
 
 }
 int processString(char* str, char** parsed, int* len)
@@ -174,7 +176,7 @@ void execArgs(char** parsed,int* len)
             close(file);
         }
     
-		if(strcmp(parsed[0], "path") == 0)
+		if( parsed[0] != NULL && strcmp(parsed[0], "path") == 0)
 		{
             printf("girdi pathe");
 			int isPath = path(parsed[1]);
@@ -201,7 +203,7 @@ void execArgs(char** parsed,int* len)
 		{
 			if(parsed[0] == NULL)
 			{
-				perror("\nNo input.");
+				printf("No input.\n");
 				exit(0);
 			}
 			if(parsed[1] != NULL)
@@ -304,7 +306,7 @@ int main(int argc, char *argv[])
         printf("TEDshell> ");
         readline(input);
 
-        while (strcmp(input, "exit") != 0)
+        while (1)
         {
 
             executeCmds(input,parsedArgs);
