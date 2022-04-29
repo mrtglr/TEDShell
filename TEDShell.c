@@ -269,25 +269,26 @@ void executeCmds(char input[], char *parsedArgs[])
     parseCommands(input,parsedCommands,&commandNum);
 
 
-
+    
     for(int i=0; i<commandNum;i++){
-        if(fork()==0){
-            isExe = processString(parsedCommands[i],parsedArgs,&len);
-        
-            if(isExe == 1)
-            {
-                execArgs(parsedArgs,&len);
-            }
+    
+    isExe = processString(parsedCommands[i],parsedArgs,&len);
+    
+        if(isExe == 1)
+        {
+            if(fork()==0){
+            execArgs(parsedArgs,&len);
             exit(0);
+            }
         }
     }
     int status;
     for (int i = 0; i < commandNum; ++i)
     {
+
         wait(&status);
+        
     }
-    
-    
 }
 
 int batch(char* fileName) //cd /mnt/c/users/hmert/desktop/unix
